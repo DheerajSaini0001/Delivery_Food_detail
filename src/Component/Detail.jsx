@@ -31,7 +31,7 @@ function Detail() {
         </div>
         <div>
           <label className="block text-sm font-medium text-zinc-700">
-          ngredients
+          Ingredients
           </label>
           <input
             type="text"
