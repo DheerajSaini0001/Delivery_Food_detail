@@ -1,5 +1,42 @@
+import { useState } from "react";
+// import Navbar from "./Navbar";
+// import Fotter from "./Fotter";
+
 function Detail() {
-  
+  const [userData, setUserData] = useState(
+    JSON.parse(localStorage.getItem("user"))
+  );
+  let [formData, setFormData] = useState({});
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((previousData) => ({
+      ...previousData,
+      [name]: name === "dishimage" ? files[0] : value,
+    }));
+  };
+  //   const handleFile = (e)=>{
+  //     const {name,files} = e.target;
+  //     setFormData((previousData)=>({
+  //         ...previousData,[name]:files[0]
+  //     }))
+  //   }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(formData);
+    //api
+    const formD = new FormData();
+    formD.append("dishname", formData.dishname);
+    formD.append("dishingredients", formData.dishingredients);
+    formD.append("dishprice", formData.dishprice);
+    formD.append("dishimage", formData.dishimage);
+    const response = await fetch("http://localhost:8000/detail", {
+      method: "post",
+      body: formD,
+    });
+    const jsonData = await response.json();
+    console.log(jsonData);
+    alert("form submitted successfully");
+  }; 
     return (
       <>
     
@@ -16,15 +53,19 @@ function Detail() {
     <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-bold text-primary">Registration Form</h2>
-        <button className="text-primary text-xl">×</button>
       </div>
-      <form className="space-y-4">
+      <form className="space-y-4" method="POST" onSubmit={handleSubmit} action="#">
         <div>
           <label className="block text-sm font-medium text-zinc-700">
         Dish Name
           </label>
           <input
+            id="dishname"
+            name="dishname"
             type="text"
+            autoComplete="dishname"
+            required=""
+            onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
             placeholder="Dish"
           />
@@ -34,7 +75,12 @@ function Detail() {
           Ingredients
           </label>
           <input
+            id="dishingredients"
+            name="dishingredients"
             type="text"
+            required=""
+            autoComplete="dishingredients"
+            onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
             placeholder="Ingredients"
           />
@@ -44,7 +90,11 @@ function Detail() {
             Price
           </label>
           <input
+            id="dishprice"
+            name="dishprice"
             type="number"
+            required=""
+            onChange={handleChange}
             className="mt-1 block w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
             placeholder="Price"
           />
@@ -54,7 +104,10 @@ function Detail() {
            Image of Dish:
           </label>
           <input
+            name="dishimage"
             type="file"
+            onChange={handleChange}
+            required=""
             className="mt-1 block w-full px-3 py-2 border border-zinc-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
          
           />
@@ -79,5 +132,5 @@ function Detail() {
     )
   }
   
-  export default Detail
+  export default Detail;
   
